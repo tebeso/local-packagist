@@ -1,0 +1,8 @@
+services:
+  satis:
+    build: .
+    ports:
+      - "9000:80"
+    volumes:
+      - ./repos:/repos
+      - ./satis:/build

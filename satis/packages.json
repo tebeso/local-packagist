@@ -1,0 +1,12 @@
+{
+    "packages": [],
+    "includes": {
+        "include/all$70c43e54cae0af20eb38a516b3726df76afb4bb8.json": {
+            "sha1": "70c43e54cae0af20eb38a516b3726df76afb4bb8"
+        }
+    },
+    "metadata-url": "/p2/%package%.json",
+    "available-packages": [
+        "terminal2/api-client"
+    ]
+}

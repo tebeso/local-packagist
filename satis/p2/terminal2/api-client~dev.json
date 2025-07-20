@@ -1,0 +1,41 @@
+{
+    "packages": {
+        "terminal2/api-client": [
+            {
+                "name": "terminal2/api-client",
+                "version": "dev-master",
+                "version_normalized": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "/repos/api-client",
+                    "reference": "d022e2f2b90a51176a517e20761d8fa226e06b92"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "http://localhost:9000/dist/terminal2/api-client/terminal2-api-client-dev-master-4760c1.zip",
+                    "reference": "d022e2f2b90a51176a517e20761d8fa226e06b92",
+                    "shasum": "f70b85a6aad7fb80bfc460256e14e0a168e3b194"
+                },
+                "require": {
+                    "guzzlehttp/guzzle": "^7.0",
+                    "php": ">=8.0 <=8.4"
+                },
+                "require-dev": {
+                    "phpunit/phpunit": "^9.0"
+                },
+                "time": "2025-07-20T10:03:16+00:00",
+                "default-branch": true,
+                "type": "library",
+                "autoload": {
+                    "psr-4": {
+                        "Terminal2\\ApiClient\\": "src/"
+                    }
+                },
+                "license": [
+                    "proprietary"
+                ],
+                "description": "API Client for interacting with the API middleware"
+            }
+        ]
+    }
+}
