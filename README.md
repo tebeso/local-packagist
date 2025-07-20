@@ -5,7 +5,7 @@ This is a fully automated local Composer repository system inspired by Packagist
 ## Features
 
 - Automatic detection of Composer packages (Git repositories only)
-- Local Composer repository served at `http://localhost:9000`
+- Local Composer repository served at `http://localhost:9000` (port configurable via .env file)
 - No need to manually list packages
 - Clean and production-ready Docker setup
 - Automatic handling of Git ownership issues in Docker
@@ -55,14 +55,14 @@ docker-compose up --build -d
 This will:
 - Generate a `satis.json` based on all repos found in `repos/`
 - Build the Composer repository into `satis/`
-- Serve it at `http://localhost:9000`
-- You can visit `http://localhost:9000` in your web browser to see a web interface with an overview of all available repositories
+- Serve it at `http://localhost:9000` (or the port specified in your .env file)
+- You can visit `http://localhost:9000` (or your configured port) in your web browser to see a web interface with an overview of all available repositories
 
 Running in daemon mode allows the containers to run in the background, which is useful for production environments or when you don't want to keep a terminal window open.
 
 ### 3. Use in Composer
 
-In your consuming project's `composer.json`:
+In your consuming project's `composer.json` (adjust the port if you've changed it in your .env file):
 
 ```json
 {
@@ -82,7 +82,7 @@ The `secure-http: false` configuration is required because the local repository 
 
 #### Using from Docker Containers
 
-If you're using this repository from another Docker container (e.g., in a Docker Compose setup), you'll need to use the Docker host's IP address instead of `localhost`:
+If you're using this repository from another Docker container, you'll need to use the Docker host's IP address instead of `localhost` (adjust the port if you've changed it in your .env file):
 
 ```json
 {
@@ -137,11 +137,12 @@ cp .env.example .env
 id -u && id -g
 ```
 
-3. Update the `.env` file with your IDs:
+3. Update the `.env` file with your IDs and optionally configure the port:
 
 ```
 USER_ID=your_user_id
 GROUP_ID=your_group_id
+PORT=9000  # Change this if you want to use a different port
 ```
 
 4. Restart the container:
