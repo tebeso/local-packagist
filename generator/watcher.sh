@@ -70,6 +70,22 @@ get_repo_filename() {
   echo "${repo//\//_}"  # Replace / with _ to create a safe filename
 }
 
+# Initialize example-package if it exists but doesn't have a .git directory
+if [ -d "/repos/example-package" ] && [ ! -d "/repos/example-package/.git" ]; then
+  echo "Initializing example-package as a Git repository..."
+  cd /repos/example-package
+  git init
+  
+  # Configure Git user identity for this repository
+  git config user.email "example@local-packagist.com"
+  git config user.name "Local Packagist"
+  
+  git add *
+  git commit -m "Initial commit for example-package"
+  cd /
+  echo "example-package initialized successfully."
+fi
+
 # Initial scan of repositories to store their commit hashes
 echo "Performing initial scan of repositories..."
 for repo in /repos/*; do

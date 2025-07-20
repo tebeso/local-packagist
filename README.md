@@ -96,3 +96,45 @@ composer require vendor/package
 ## Notes
 
 - Works with Git repositories containing `composer.json` in root.
+
+## Example Package
+
+This repository includes a minimal example package (`example/minimal-package`) that demonstrates how to structure a Composer package for use with the Local Packagist system. You can find it in the `repos/example-package` directory.
+
+### Package Structure
+
+```
+example-package/
+├── .git/                  # Git repository (required)
+├── composer.json          # Package metadata and dependencies
+├── README.md              # Documentation
+└── src/
+    └── HelloWorld.php     # Example class with PSR-4 autoloading
+```
+
+### Key Components
+
+1. **composer.json**: Defines the package name, description, dependencies, and autoloading configuration
+2. **src/ directory**: Contains the PHP classes following PSR-4 autoloading standard
+3. **Git repository**: The package must be initialized as a Git repository with committed files
+
+### Using the Example Package
+
+Once the Local Packagist system is running, you can require this example package in your projects:
+
+```bash
+composer require example/minimal-package
+```
+
+Then use it in your PHP code:
+
+```php
+<?php
+
+use Example\MinimalPackage\HelloWorld;
+
+$hello = new HelloWorld();
+echo $hello->greet('Developer');
+```
+
+This example package serves as a template for creating your own packages to use with the Local Packagist system.
