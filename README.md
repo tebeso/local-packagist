@@ -80,6 +80,26 @@ In your consuming project's `composer.json`:
 
 The `secure-http: false` configuration is required because the local repository is served over HTTP, not HTTPS, and Composer's `secure-http` setting defaults to true.
 
+#### Using from Docker Containers
+
+If you're using this repository from another Docker container (e.g., in a Docker Compose setup), you'll need to use the Docker host's IP address instead of `localhost`:
+
+```json
+{
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://172.17.0.1:9000"
+    }
+  ],
+  "config": {
+    "secure-http": false
+  }
+}
+```
+
+`172.17.0.1` is the default Docker host IP address. This allows containers to communicate with services running on the host machine.
+
 Then install as usual:
 
 ```bash
