@@ -1,5 +1,6 @@
 services:
   satis:
+    restart: unless-stopped
     build:
       context: .
       args:
