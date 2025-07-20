@@ -1,0 +1,7 @@
+.idea
+repos/*
+satis/dist
+satis/include
+satis/p2
+satis/index.html
+satis/packages.json
