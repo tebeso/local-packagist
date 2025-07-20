@@ -1,4 +1,5 @@
 .idea
+.env
 repos/*
 satis/dist
 satis/include

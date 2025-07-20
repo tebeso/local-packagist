@@ -97,6 +97,51 @@ composer require vendor/package
 
 - Works with Git repositories containing `composer.json` in root.
 
+## User Permissions
+
+By default, the Docker container runs with user ID 1000 and group ID 1000, which is typically the first user on a Linux system. If your user has different IDs, you might encounter permission issues when the container creates or modifies files.
+
+### Configuring User IDs
+
+To run the container with your user ID and group ID:
+
+1. Copy the `.env.example` file to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+2. Find your user ID and group ID:
+
+```bash
+id -u && id -g
+```
+
+3. Update the `.env` file with your IDs:
+
+```
+USER_ID=your_user_id
+GROUP_ID=your_group_id
+```
+
+4. Restart the container:
+
+```bash
+docker-compose down
+docker-compose up --build -d
+```
+
+This ensures that all files created by the container will be owned by your user, avoiding permission issues when you need to modify or delete these files.
+
+### How It Works
+
+- The Dockerfile creates a non-root user with the specified user ID and group ID
+- The container runs as this user instead of root
+- Git operations are performed with the correct permissions
+- The example-package is automatically initialized with the correct file permissions
+
+This approach solves the "dubious ownership" issues that can occur with Git repositories in Docker containers and ensures that you can easily manage the files in the `repos/` directory.
+
 ## Example Package
 
 This repository includes a minimal example package (`example/minimal-package`) that demonstrates how to structure a Composer package for use with the Local Packagist system. You can find it in the `repos/example-package` directory.

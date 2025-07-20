@@ -1,9 +1,23 @@
 #!/bin/bash
 
+# Get current user ID and group ID
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
+
+echo "Running as user ID: $CURRENT_UID, group ID: $CURRENT_GID"
+
 echo "Installing Satis..."
 composer create-project --quiet --no-interaction --stability=dev --ignore-platform-reqs composer/satis /tmp/satis
 
 echo "Generating initial satis.json and building package index..."
+
+# Create a directory to store commit hashes with correct permissions
+mkdir -p /tmp/repo_hashes
+chmod 755 /tmp/repo_hashes
+
+# Ensure Git knows who we are
+git config --global user.email "packagist@local-packagist.com"
+git config --global user.name "Local Packagist"
 
 for repo in /repos/*; do
   if [ -d "$repo" ]; then
@@ -22,12 +36,10 @@ php /generate.php
 php /tmp/satis/bin/satis build /satis.json /build
 
 echo "Starting local server on http://localhost:9000"
-php -S 0.0.0.0:80 -t /build &
+# Use port 8080 (non-privileged port)
+php -S 0.0.0.0:8080 -t /build &
 
 echo "Watching /repos for Git commits and changes..."
-
-# Create a directory to store commit hashes
-mkdir -p /tmp/repo_hashes
 
 # Function to check if a directory is a Git repository
 is_git_repo() {
@@ -70,20 +82,38 @@ get_repo_filename() {
   echo "${repo//\//_}"  # Replace / with _ to create a safe filename
 }
 
-# Initialize example-package if it exists but doesn't have a .git directory
-if [ -d "/repos/example-package" ] && [ ! -d "/repos/example-package/.git" ]; then
+# Function to initialize example-package as a Git repository
+initialize_example_package() {
   echo "Initializing example-package as a Git repository..."
   cd /repos/example-package
+  
+  # Initialize Git repository
   git init
   
   # Configure Git user identity for this repository
   git config user.email "example@local-packagist.com"
   git config user.name "Local Packagist"
   
+  # Add all files to Git
   git add *
+  
+  # Commit the files
   git commit -m "Initial commit for example-package"
+  
+  # Ensure the .git directory has the correct permissions
+  if [ -d ".git" ]; then
+    echo "Setting correct permissions for .git directory..."
+    find .git -type d -exec chmod 755 {} \;
+    find .git -type f -exec chmod 644 {} \;
+  fi
+  
   cd /
   echo "example-package initialized successfully."
+}
+
+# Initialize example-package if it exists but doesn't have a .git directory
+if [ -d "/repos/example-package" ] && [ ! -d "/repos/example-package/.git" ]; then
+  initialize_example_package
 fi
 
 # Initial scan of repositories to store their commit hashes
@@ -154,6 +184,12 @@ while true; do
       elif [ -f "$repo/composer.json" ]; then
         # It's not a Git repo but has a composer.json file
         echo "[NOT A GIT REPOSITORY] $repo - Contains composer.json but is not a Git repository. Initialize it with 'git init' and commit your files."
+        
+        # If this is the example-package, initialize it automatically
+        if [ "$repo" = "/repos/example-package" ]; then
+          echo "Detected example-package without Git repository. Initializing automatically..."
+          initialize_example_package
+        fi
       fi
     fi
   done
