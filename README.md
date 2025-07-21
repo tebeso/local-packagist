@@ -204,3 +204,7 @@ echo $hello->greet('Developer');
 ```
 
 This example package serves as a template for creating your own packages to use with the Local Packagist system.
+
+## Author
+
+T. Ulrich - <dlhairbus320@googlemail.com> - <https://github.com/tebulrich>
