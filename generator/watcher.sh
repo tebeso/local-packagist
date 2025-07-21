@@ -19,6 +19,35 @@ chmod 755 /tmp/repo_hashes
 git config --global user.email "packagist@local-packagist.com"
 git config --global user.name "Local Packagist"
 
+# Function to initialize example-package as a Git repository
+initialize_example_package() {
+  echo "Initializing example-package as a Git repository..."
+  cd /repos/example-package
+  
+  # Initialize Git repository
+  git init
+  
+  # Configure Git user identity for this repository
+  git config user.email "example@local-packagist.com"
+  git config user.name "Local Packagist"
+  
+  # Add all files to Git
+  git add *
+  
+  # Commit the files
+  git commit -m "Initial commit for example-package"
+  
+  # Ensure the .git directory has the correct permissions
+  if [ -d ".git" ]; then
+    echo "Setting correct permissions for .git directory..."
+    find .git -type d -exec chmod 755 {} \;
+    find .git -type f -exec chmod 644 {} \;
+  fi
+  
+  cd /
+  echo "example-package initialized successfully."
+}
+
 for repo in /repos/*; do
   if [ -d "$repo" ]; then
     echo "Adding $repo as a safe directory for Git..."
@@ -31,6 +60,11 @@ for repo in /repos/*; do
     fi
   fi
 done
+
+# Initialize example-package if it exists but doesn't have a .git directory
+if [ -d "/repos/example-package" ] && [ ! -d "/repos/example-package/.git" ]; then
+  initialize_example_package
+fi
 
 php /generate.php
 php /tmp/satis/bin/satis build /satis.json /build
@@ -81,40 +115,6 @@ get_repo_filename() {
   local repo="$1"
   echo "${repo//\//_}"  # Replace / with _ to create a safe filename
 }
-
-# Function to initialize example-package as a Git repository
-initialize_example_package() {
-  echo "Initializing example-package as a Git repository..."
-  cd /repos/example-package
-  
-  # Initialize Git repository
-  git init
-  
-  # Configure Git user identity for this repository
-  git config user.email "example@local-packagist.com"
-  git config user.name "Local Packagist"
-  
-  # Add all files to Git
-  git add *
-  
-  # Commit the files
-  git commit -m "Initial commit for example-package"
-  
-  # Ensure the .git directory has the correct permissions
-  if [ -d ".git" ]; then
-    echo "Setting correct permissions for .git directory..."
-    find .git -type d -exec chmod 755 {} \;
-    find .git -type f -exec chmod 644 {} \;
-  fi
-  
-  cd /
-  echo "example-package initialized successfully."
-}
-
-# Initialize example-package if it exists but doesn't have a .git directory
-if [ -d "/repos/example-package" ] && [ ! -d "/repos/example-package/.git" ]; then
-  initialize_example_package
-fi
 
 # Initial scan of repositories to store their commit hashes
 echo "Performing initial scan of repositories..."
